@@ -1,0 +1,67 @@
+version: '3'
+services:
+  postgresql:
+    container_name: postgresql
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=34512
+      - POSTGRES_DB=book
+    ports:
+      - "5432:5432"
+    volumes:
+      - "postgresql-data:/var/lib/postgresql/data"
+      - "./db/initdb.sql:/docker-entrypoint-initdb.d/initdb.sql"
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:3.11.7-management-alpine
+    restart: always
+    volumes:
+      - "rabbitmq-data:/var/lib/rabbitmq"
+    environment:
+      - RABBITMQ_DEFAULT_USER=user
+      - RABBITMQ_DEFAULT_PASS=34512
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+  redis:
+    container_name: redis
+    image: redis:7.0.8-alpine
+    restart: always
+    command: redis-server --requirepass 34512
+    ports:
+      - "6379:6379"
+    volumes:
+      - "redis-data:/data"
+  nginx:
+    container_name: nginx
+    image: nginx:1.23.3-alpine
+    restart: always
+    ports:
+      - "80:80"
+      - "3000:3000"
+    volumes:
+      - "./web:/var/www/web"
+      - "./api:/var/www/api"
+      - "./nginx/conf.d:/etc/nginx/conf.d"
+  api:
+    container_name: api
+    image: php:8.2-fpm-alpine
+    restart: always
+    working_dir: /var/www/api
+    volumes:
+      - "./api:/var/www/api"
+  web:
+    container_name: web
+    image: php:8.2-fpm-alpine
+    restart: always
+    working_dir: /var/wwww/web
+    volumes:
+      - "./web:/var/www/web"
+volumes:
+  postgresql-data:
+    driver: local
+  rabbitmq-data:
+    driver: local
+  redis-data:
+    driver: local
