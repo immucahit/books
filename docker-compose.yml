@@ -42,16 +42,16 @@ services:
       - "3000:3000"
     volumes:
       - "./web:/var/www/web"
-      - "./api:/var/www/api"
+      - "./api:/api"
       - "./nginx/conf.d:/etc/nginx/conf.d"
   api:
     container_name: api
     build: 
       dockerfile: "./api/Dockerfile"
     restart: always
-    working_dir: /var/www/api
+    working_dir: /api
     volumes:
-      - "./api:/var/www/api"
+      - "./api:/api"
     environment:
       - JWT_KEY=books
       - CACHE_DRIVER="redis"
@@ -69,14 +69,18 @@ services:
       - RABBITMQ_PORT=5672
       - RABBITMQ_USER=user
       - RABBITMQ_PASSWORD=34512
-      - RABBITMQ_VHOST="/"
+      - RABBITMQ_VHOST=/
   web:
     container_name: web
-    image: php:8.2-fpm-alpine
+    build: 
+      dockerfile: "./web/Dockerfile"
     restart: always
-    working_dir: /var/wwww/web
+    working_dir: /web
     volumes:
-      - "./web:/var/www/web"
+      - "./web:/web"
+    environment:
+      - APP_NAME=Books
+      - BOOKS_API="http://nginx:3000/api"
 volumes:
   postgresql-data:
     driver: local
