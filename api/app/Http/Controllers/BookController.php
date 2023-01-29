@@ -24,7 +24,7 @@ class BookController extends Controller
     {
         $user = $request->input('user');
         return Cache::remember('user:id:'.$user.':book',now()->addHour(),function() use ($user){
-            return BookResource::collection(Book::byUser($user)->isDeleted(false)->get());
+            return BookResource::collection(Book::with('author')->byUser($user)->isDeleted(false)->get());
         });
     }
 
@@ -53,7 +53,7 @@ class BookController extends Controller
             'user_id' => $request->input('user'),
             'author_id' => $request->input('authorId'),
             'title' => $request->input('title'),
-            'description' => $request->input('descripton'),
+            'description' => $request->input('description'),
             'isbn' => $request->input('isbn')
         ]);
 
@@ -98,7 +98,7 @@ class BookController extends Controller
 
         $book->author_id = $request->input('authorId');
         $book->title = $request->input('title');
-        $book->description = $request->input('descripton');
+        $book->description = $request->input('description');
         $book->isbn = $request->input('isbn');
 
         if($book->save()){
@@ -109,6 +109,18 @@ class BookController extends Controller
         Logging::dispatch($user,'update',$book);
 
         return new BookResource($book);
+    }
+
+    public function show(Request $request,$id)
+    {
+        $user = $request->input('user');
+        return Cache::remember('user:id::book:id:'.$id,now()->addHour(),function() use ($user,$id){
+            $book = Book::byUser($user)->isDeleted(false)->find($id);
+            if(!$book){
+                return response()->noContent(404);
+            }
+            return new BookResource($book);
+        });
     }
 
     /**

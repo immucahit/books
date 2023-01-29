@@ -25,6 +25,6 @@ Route::get('update-book-price',[BookController::class,'updatePrice'])->name('upd
 
 Route::middleware([JWTVerify::class])
     ->group(function(){
-        Route::apiResource('authors',AuthorController::class)->except('destroy');
-        Route::apiResource('books',BookController::class)->except('show');
+        Route::apiResource('authors',AuthorController::class)->only(['index','show','store','update']);
+        Route::apiResource('books',BookController::class);
     });

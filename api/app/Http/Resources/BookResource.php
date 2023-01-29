@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\AuthorResource;
 
 class BookResource extends JsonResource
 {
@@ -19,7 +20,9 @@ class BookResource extends JsonResource
             'authorId' => $this->author_id,
             'title' => $this->title,
             'description' => $this->description,
-            'isbn' => $this->isbn
+            'isbn' => $this->isbn,
+            'price' => $this->price,
+            'author' => new AuthorResource($this->author)
         ];
     }
 }
