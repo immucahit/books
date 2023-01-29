@@ -53,6 +53,7 @@ services:
     volumes:
       - "./api:/api"
     environment:
+      - APP_NAME="Book API"
       - JWT_KEY=books
       - CACHE_DRIVER="redis"
       - REDIS_CLIENT=predis
