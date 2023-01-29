@@ -46,11 +46,30 @@ services:
       - "./nginx/conf.d:/etc/nginx/conf.d"
   api:
     container_name: api
-    image: php:8.2-fpm-alpine
+    build: 
+      dockerfile: "./api/Dockerfile"
     restart: always
     working_dir: /var/www/api
     volumes:
       - "./api:/var/www/api"
+    environment:
+      - JWT_KEY=books
+      - CACHE_DRIVER="redis"
+      - REDIS_CLIENT=predis
+      - REDIS_HOST=redis
+      - REDIS_PASSWORD=34512
+      - REDIS_PORT=6379
+      - DB_CONNECTION=pgsql
+      - DB_HOST=postgresql
+      - DB_PORT=5432
+      - DB_DATABASE=book
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=34512
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+      - RABBITMQ_USER=user
+      - RABBITMQ_PASSWORD=34512
+      - RABBITMQ_VHOST="/"
   web:
     container_name: web
     image: php:8.2-fpm-alpine
