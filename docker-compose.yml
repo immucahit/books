@@ -73,7 +73,10 @@ services:
       - RABBITMQ_VHOST=/
   web:
     container_name: web
-    build: 
+    build:
+      args:
+        user: user
+        uid: 1000
       dockerfile: "./web/Dockerfile"
     restart: always
     working_dir: /web

@@ -114,7 +114,7 @@ class BookController extends Controller
     public function show(Request $request,$id)
     {
         $user = $request->input('user');
-        return Cache::remember('user:id::book:id:'.$id,now()->addHour(),function() use ($user,$id){
+        return Cache::remember('user:id:'.$id.':book:id:'.$id,now()->addHour(),function() use ($user,$id){
             $book = Book::byUser($user)->isDeleted(false)->find($id);
             if(!$book){
                 return response()->noContent(404);
