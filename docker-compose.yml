@@ -46,7 +46,10 @@ services:
       - "./nginx/conf.d:/etc/nginx/conf.d"
   api:
     container_name: api
-    build: 
+    build:
+      args:
+        user: user
+        uid: 1000 
       dockerfile: "./api/Dockerfile"
     restart: always
     working_dir: /api
